@@ -3,6 +3,8 @@ package com.myTodo.services;
 import com.myTodo.data.model.*;
 import com.myTodo.data.repository.*;
 import com.myTodo.dtos.request.AddTaskRequest;
+import com.myTodo.dtos.request.EditTaskMessageRequest;
+import com.myTodo.dtos.response.AllTaskResponse;
 import com.myTodo.dtos.response.EndUserResponse;
 import com.myTodo.exception.MyTodoException;
 import jakarta.transaction.Transactional;
@@ -99,7 +101,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public List<Task> allTask(Long userId) throws MyTodoException {
+    public AllTaskResponse allTask(Long userId) throws MyTodoException {
         EndUser endUser = endUserService.findUserBy(userId);
         List<Task> tasks = endUser.getTasks();
 
@@ -107,7 +109,32 @@ public class TaskServiceImpl implements TaskService{
             throw new MyTodoException("No task found");
         }
 
-        return tasks;
+        AllTaskResponse response = new AllTaskResponse();
+        response.setTasks(tasks);
+
+        return response;
+    }
+
+    @Override
+    public Task editTaskMessage(Long userId, Long taskId, EditTaskMessageRequest request) throws MyTodoException {
+        EndUser endUser = endUserService.findUserBy(userId);
+        List<Task> tasks = endUser.getTasks();
+        Task taskValue = null;
+
+        if (tasks.isEmpty()){
+            throw new MyTodoException("No task found");
+        }
+
+
+        for (Task task : tasks){
+            if (task.getId().equals(taskId)){
+                task.setMessage(request.getMessage());
+                taskValue = task;
+            }
+        }
+
+
+        return taskValue;
     }
 
 

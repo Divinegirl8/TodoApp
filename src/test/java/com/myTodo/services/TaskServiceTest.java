@@ -5,6 +5,8 @@ import com.myTodo.data.model.DueDate;
 import com.myTodo.data.model.Task;
 import com.myTodo.data.model.Time;
 import com.myTodo.dtos.request.AddTaskRequest;
+import com.myTodo.dtos.request.EditTaskMessageRequest;
+import com.myTodo.dtos.response.AllTaskResponse;
 import com.myTodo.dtos.response.EndUserResponse;
 import com.myTodo.exception.MyTodoException;
 import lombok.extern.slf4j.Slf4j;
@@ -69,9 +71,16 @@ class TaskServiceTest {
       assertThrows(MyTodoException.class,()->service.findTaskBy(9L));
    }
    @Test void testThatAUserHasListOfTasks() throws MyTodoException {
-       List<Task> tasks = service.allTask(1L);
+       AllTaskResponse tasks = service.allTask(1L);
        assertThat(tasks).isNotNull();
        log.info("task -> {}",tasks);
 
+   }
+   @Test void testThatAUserCanEditTaskMessage() throws MyTodoException {
+       EditTaskMessageRequest request = new EditTaskMessageRequest();
+       request.setMessage("edit");
+       Task task = service.editTaskMessage(1L,10L,request);
+       assertThat(task).isNotNull();
+       log.info("task -> {}",task);
    }
 }
