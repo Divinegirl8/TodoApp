@@ -5,9 +5,10 @@ import com.myTodo.data.model.DueDate;
 import com.myTodo.data.model.Task;
 import com.myTodo.data.model.Time;
 import com.myTodo.dtos.request.AddTaskRequest;
+import com.myTodo.dtos.request.EditTaskDateRequest;
 import com.myTodo.dtos.request.EditTaskMessageRequest;
-import com.myTodo.dtos.response.AllTaskResponse;
-import com.myTodo.dtos.response.EndUserResponse;
+import com.myTodo.dtos.request.EditTaskTimeRequest;
+import com.myTodo.dtos.response.*;
 import com.myTodo.exception.MyTodoException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class TaskServiceTest {
        request.setMinutes("20");
        request.setMessage("code");
 
-       Task task = service.addTask(request,1L);
+       AddTaskResponse task = service.addTask(request,1L);
        assertThat(task).isNotNull();
        log.info("Task -> {}",task);
 
@@ -59,7 +60,7 @@ class TaskServiceTest {
         request.setMinutes("20");
         request.setMessage("code java with me vlog");
 
-        Task task = service.addTask(request,1L);
+        AddTaskResponse task = service.addTask(request,1L);
         assertThat(task).isNotNull();
         log.info("Task -> {}",task);
 
@@ -78,9 +79,30 @@ class TaskServiceTest {
    }
    @Test void testThatAUserCanEditTaskMessage() throws MyTodoException {
        EditTaskMessageRequest request = new EditTaskMessageRequest();
-       request.setMessage("edit");
-       Task task = service.editTaskMessage(1L,10L,request);
+       request.setMessage("edit message");
+       EditTaskMessageResponse task = service.editTaskMessage(1L,10L,request);
        assertThat(task).isNotNull();
        log.info("task -> {}",task);
    }
+
+   @Test void testThatAUserCanEditTaskTime() throws MyTodoException {
+       EditTaskTimeRequest request = new EditTaskTimeRequest();
+       request.setHour("00");
+       request.setMinutes("00");
+       EditTaskTimeResponse task =  service.editTaskTIme(1L,11L,8L,request);
+       assertThat(task).isNotNull();
+       log.info("task -> {}",task);
+   }
+
+   @Test void  testThatAUserCanEditTaskDate() throws MyTodoException {
+       EditTaskDateRequest request = new EditTaskDateRequest();
+       request.setDay("01");
+       request.setMonth("10");
+       request.setYear("1999");
+
+       EditTaskDateResponse response = service.editTaskDate(1L,10L,7L,request);
+       assertThat(response).isNotNull();
+       log.info("task -> {}",response);
+   }
+
 }

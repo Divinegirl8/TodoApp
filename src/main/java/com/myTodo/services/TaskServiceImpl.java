@@ -3,9 +3,10 @@ package com.myTodo.services;
 import com.myTodo.data.model.*;
 import com.myTodo.data.repository.*;
 import com.myTodo.dtos.request.AddTaskRequest;
+import com.myTodo.dtos.request.EditTaskDateRequest;
 import com.myTodo.dtos.request.EditTaskMessageRequest;
-import com.myTodo.dtos.response.AllTaskResponse;
-import com.myTodo.dtos.response.EndUserResponse;
+import com.myTodo.dtos.request.EditTaskTimeRequest;
+import com.myTodo.dtos.response.*;
 import com.myTodo.exception.MyTodoException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public Task addTask(AddTaskRequest request,Long userId) throws MyTodoException {
+    public AddTaskResponse addTask(AddTaskRequest request, Long userId) throws MyTodoException {
          EndUser endUser = endUserService.findUserBy(userId);
 
         Date date = new Date();
@@ -76,8 +77,11 @@ public class TaskServiceImpl implements TaskService{
         endUser.getTasks().add(task);
         endUserRepository.save(endUser);
 
+        AddTaskResponse response = new AddTaskResponse();
+        response.setTask(task);
 
-        return task;
+
+        return response;
     }
 
     @Override
@@ -116,7 +120,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public Task editTaskMessage(Long userId, Long taskId, EditTaskMessageRequest request) throws MyTodoException {
+    public EditTaskMessageResponse editTaskMessage(Long userId, Long taskId, EditTaskMessageRequest request) throws MyTodoException {
         EndUser endUser = endUserService.findUserBy(userId);
         List<Task> tasks = endUser.getTasks();
         Task taskValue = null;
@@ -130,11 +134,68 @@ public class TaskServiceImpl implements TaskService{
             if (task.getId().equals(taskId)){
                 task.setMessage(request.getMessage());
                 taskValue = task;
+
             }
         }
 
+        EditTaskMessageResponse response = new EditTaskMessageResponse();
+        response.setTask(taskValue);
 
-        return taskValue;
+        return response;
+    }
+
+    @Override
+    public EditTaskTimeResponse editTaskTIme(Long userId, Long taskId, Long timeId, EditTaskTimeRequest request) throws MyTodoException {
+        EndUser endUser = endUserService.findUserBy(userId);
+        List<Task> tasks = endUser.getTasks();
+
+        Task taskValue = null;
+
+        if (tasks.isEmpty()){
+            throw new MyTodoException("No task found");
+        }
+
+
+        for (Task task : tasks){
+           if (task.getId().equals(taskId) && task.getDueDate().getTime().getId().equals(timeId)){
+               Time time =  task.getDueDate().getTime();
+               time.setHour(request.getHour());
+               time.setMinutes(request.getMinutes());
+                taskValue = task;
+
+            }
+        }
+
+        EditTaskTimeResponse response = new EditTaskTimeResponse();
+        response.setTask(taskValue);
+        return response;
+    }
+
+    @Override
+    public EditTaskDateResponse editTaskDate(Long userId, Long taskId, Long dateId, EditTaskDateRequest request) throws MyTodoException {
+        EndUser endUser = endUserService.findUserBy(userId);
+        List<Task> tasks = endUser.getTasks();
+
+        Task taskValue = null;
+
+        if (tasks.isEmpty()){
+            throw new MyTodoException("No task found");
+        }
+
+
+        for (Task task : tasks){
+            if (task.getId().equals(taskId) && task.getDueDate().getDate().getId().equals(dateId)){
+                Date date = task.getDueDate().getDate();
+                date.setDay(request.getDay());
+                date.setMonth(request.getMonth());
+                date.setYear(request.getYear());
+                taskValue = task;
+            }
+        }
+
+        EditTaskDateResponse response = new EditTaskDateResponse();
+        response.setTask(taskValue);
+        return response;
     }
 
 
