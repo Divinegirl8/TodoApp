@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,8 +46,32 @@ class TaskServiceTest {
 
    }
 
-   @Test void testThatUserCanCompleteTask() throws MyTodoException {
-      service.completeTask(1L,7L);
-      assertThrows(MyTodoException.class,()->service.findTaskBy(7L));
+    @Test void  testThatAUserCanAddTask2() throws MyTodoException {
+
+        AddTaskRequest request = new AddTaskRequest();
+        request.setDay("10");
+        request.setYear("2024");
+        request.setMonth("10");
+
+        request.setHour("12");
+        request.setMinutes("20");
+        request.setMessage("code java with me vlog");
+
+        Task task = service.addTask(request,1L);
+        assertThat(task).isNotNull();
+        log.info("Task -> {}",task);
+
+    }
+
+
+    @Test void testThatUserCanCompleteTask() throws MyTodoException {
+      service.completeTask(1L,9L);
+      assertThrows(MyTodoException.class,()->service.findTaskBy(9L));
+   }
+   @Test void testThatAUserHasListOfTasks() throws MyTodoException {
+       List<Task> tasks = service.allTask(1L);
+       assertThat(tasks).isNotNull();
+       log.info("task -> {}",tasks);
+
    }
 }

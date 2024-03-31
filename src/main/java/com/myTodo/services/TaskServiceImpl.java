@@ -98,5 +98,17 @@ public class TaskServiceImpl implements TaskService{
         return taskRepository.findById(id).orElseThrow(()->new MyTodoException("no task with " + id + " found"));
     }
 
+    @Override
+    public List<Task> allTask(Long userId) throws MyTodoException {
+        EndUser endUser = endUserService.findUserBy(userId);
+        List<Task> tasks = endUser.getTasks();
+
+        if (tasks.isEmpty()){
+            throw new MyTodoException("No task found");
+        }
+
+        return tasks;
+    }
+
 
 }
