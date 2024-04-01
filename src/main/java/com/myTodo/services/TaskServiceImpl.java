@@ -1,5 +1,13 @@
 package com.myTodo.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.JsonPatchOperation;
+import com.github.fge.jsonpatch.ReplaceOperation;
 import com.myTodo.data.model.*;
 import com.myTodo.data.repository.*;
 import com.myTodo.dtos.request.AddTaskRequest;
@@ -13,9 +21,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.stream;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +38,7 @@ public class TaskServiceImpl implements TaskService{
     private final DateRepository dateRepository;
     private final EndUserService endUserService;
     private final DueDateRepository dueDateRepository;
+
     @Override
     public EndUserResponse createTask() {
 
@@ -132,7 +144,8 @@ public class TaskServiceImpl implements TaskService{
 
         for (Task task : tasks){
             if (task.getId().equals(taskId)){
-                task.setMessage(request.getMessage());
+                if (request.getMessage() != null){
+                task.setMessage(request.getMessage());}
                 taskValue = task;
 
             }
@@ -158,10 +171,18 @@ public class TaskServiceImpl implements TaskService{
 
         for (Task task : tasks){
            if (task.getId().equals(taskId) && task.getDueDate().getTime().getId().equals(timeId)){
+
                Time time =  task.getDueDate().getTime();
-               time.setHour(request.getHour());
-               time.setMinutes(request.getMinutes());
-                taskValue = task;
+
+               if (request.getHour() != null) {
+                   time.setHour(request.getHour());
+               }
+
+               if (request.getMinutes() != null) {
+                   time.setMinutes(request.getMinutes());
+               }
+
+               taskValue = task;
 
             }
         }
@@ -186,9 +207,16 @@ public class TaskServiceImpl implements TaskService{
         for (Task task : tasks){
             if (task.getId().equals(taskId) && task.getDueDate().getDate().getId().equals(dateId)){
                 Date date = task.getDueDate().getDate();
-                date.setDay(request.getDay());
-                date.setMonth(request.getMonth());
-                date.setYear(request.getYear());
+
+                if (request.getDay() != null){
+                date.setDay(request.getDay());}
+
+                if (request.getMonth() != null){
+                date.setMonth(request.getMonth());}
+
+                if (request.getYear() != null){
+                date.setYear(request.getYear());}
+
                 taskValue = task;
             }
         }
@@ -197,6 +225,7 @@ public class TaskServiceImpl implements TaskService{
         response.setTask(taskValue);
         return response;
     }
+
 
 
 }

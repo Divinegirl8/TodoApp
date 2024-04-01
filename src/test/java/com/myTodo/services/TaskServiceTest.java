@@ -79,7 +79,7 @@ class TaskServiceTest {
    }
    @Test void testThatAUserCanEditTaskMessage() throws MyTodoException {
        EditTaskMessageRequest request = new EditTaskMessageRequest();
-       request.setMessage("edit message");
+       request.setMessage("edit my todo task message");
        EditTaskMessageResponse task = service.editTaskMessage(1L,10L,request);
        assertThat(task).isNotNull();
        log.info("task -> {}",task);
@@ -87,8 +87,9 @@ class TaskServiceTest {
 
    @Test void testThatAUserCanEditTaskTime() throws MyTodoException {
        EditTaskTimeRequest request = new EditTaskTimeRequest();
-       request.setHour("00");
+       request.setHour("12");
        request.setMinutes("00");
+
        EditTaskTimeResponse task =  service.editTaskTIme(1L,11L,8L,request);
        assertThat(task).isNotNull();
        log.info("task -> {}",task);
@@ -96,9 +97,9 @@ class TaskServiceTest {
 
    @Test void  testThatAUserCanEditTaskDate() throws MyTodoException {
        EditTaskDateRequest request = new EditTaskDateRequest();
-       request.setDay("01");
-       request.setMonth("10");
-       request.setYear("1999");
+       request.setDay("10");
+       request.setMonth("05");
+
 
        EditTaskDateResponse response = service.editTaskDate(1L,10L,7L,request);
        assertThat(response).isNotNull();
