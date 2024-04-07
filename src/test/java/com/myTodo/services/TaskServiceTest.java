@@ -1,9 +1,6 @@
 package com.myTodo.services;
 
-import com.myTodo.data.model.Date;
-import com.myTodo.data.model.DueDate;
-import com.myTodo.data.model.Task;
-import com.myTodo.data.model.Time;
+
 import com.myTodo.dtos.request.AddTaskRequest;
 import com.myTodo.dtos.request.EditTaskDateRequest;
 import com.myTodo.dtos.request.EditTaskMessageRequest;
@@ -15,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +21,9 @@ class TaskServiceTest {
         @Autowired
         private TaskService service;
 
-   @Test void testThatAUserHasOneTaskObject(){
+
+
+    @Test void testThatAUserHasOneTaskObject(){
        EndUserResponse response = service.createTask();
        assertThat(response).isNotNull();
        log.info("end user id -> {}",response);
@@ -80,7 +77,7 @@ class TaskServiceTest {
    @Test void testThatAUserCanEditTaskMessage() throws MyTodoException {
        EditTaskMessageRequest request = new EditTaskMessageRequest();
        request.setMessage("edit my todo task message");
-       EditTaskMessageResponse task = service.editTaskMessage(1L,10L,request);
+       EditTaskMessageResponse task = service.editTaskMessage(1L,2L,request);
        assertThat(task).isNotNull();
        log.info("task -> {}",task);
    }
@@ -90,7 +87,7 @@ class TaskServiceTest {
        request.setHour("12");
        request.setMinutes("00");
 
-       EditTaskTimeResponse task =  service.editTaskTIme(1L,11L,8L,request);
+       EditTaskTimeResponse task =  service.editTaskTIme(1L,3L,2L,request);
        assertThat(task).isNotNull();
        log.info("task -> {}",task);
    }
@@ -101,7 +98,7 @@ class TaskServiceTest {
        request.setMonth("05");
 
 
-       EditTaskDateResponse response = service.editTaskDate(1L,10L,7L,request);
+       EditTaskDateResponse response = service.editTaskDate(1L,3L,2L,request);
        assertThat(response).isNotNull();
        log.info("task -> {}",response);
    }

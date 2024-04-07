@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @Getter
 public class AddTaskRequest {
     private String message;
-    private String year;
-    private String month;
     private String day;
+    private String month;
+    private String year;
     private String hour;
     private String minutes;
 

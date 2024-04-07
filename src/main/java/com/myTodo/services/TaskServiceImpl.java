@@ -57,18 +57,22 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public AddTaskResponse addTask(AddTaskRequest request, Long userId) throws MyTodoException {
-         EndUser endUser = endUserService.findUserBy(userId);
+
+        validateAddTaskRequest(request);
+
+
+        EndUser endUser = endUserService.findUserBy(userId);
 
         Date date = new Date();
-        date.setDay(request.getDay());
-        date.setMonth(request.getMonth());
-        date.setYear(request.getYear());
+        date.setDay(request.getDay().trim());
+        date.setMonth(request.getMonth().trim());
+        date.setYear(request.getYear().trim());
         dateRepository.save(date);
 
 
         Time time = new Time();
-        time.setHour(request.getHour());
-        time.setMinutes(request.getMinutes());
+        time.setHour(request.getHour().trim());
+        time.setMinutes(request.getMinutes().trim());
         timeRepository.save(time);
 
 
@@ -80,7 +84,7 @@ public class TaskServiceImpl implements TaskService{
 
 
         Task task = new Task();
-        task.setMessage(request.getMessage());
+        task.setMessage(request.getMessage().trim());
         task.setUserId(endUser.getId());
         task.setDueDate(dueDate);
         taskRepository.save(task);
@@ -90,7 +94,7 @@ public class TaskServiceImpl implements TaskService{
         endUserRepository.save(endUser);
 
         AddTaskResponse response = new AddTaskResponse();
-        response.setTask(task);
+        response.setId(task.getId());
 
 
         return response;
@@ -106,7 +110,7 @@ public class TaskServiceImpl implements TaskService{
                 userTask.remove(task);
                 taskRepository.delete(task);
                 endUserRepository.save(endUser);
-                break;
+
             }
         }
     }
@@ -169,10 +173,14 @@ public class TaskServiceImpl implements TaskService{
         }
 
 
+
+
         for (Task task : tasks){
            if (task.getId().equals(taskId) && task.getDueDate().getTime().getId().equals(timeId)){
 
                Time time =  task.getDueDate().getTime();
+
+
 
                if (request.getHour() != null) {
                    time.setHour(request.getHour());
@@ -224,6 +232,33 @@ public class TaskServiceImpl implements TaskService{
         EditTaskDateResponse response = new EditTaskDateResponse();
         response.setTask(taskValue);
         return response;
+    }
+
+    private void validateAddTaskRequest(AddTaskRequest request) throws MyTodoException {
+        if(request.getMessage() == null){
+            throw new MyTodoException("{\"msgErr\": \"message field cannot be empty\"}");
+        }
+
+        if(request.getDay() == null){
+            throw new MyTodoException("{\"dayErr\": \"Day field cannot be empty\"}");
+        }
+
+        if(request.getMonth() == null){
+            throw new MyTodoException("{\"mntErr\": \"month field cannot be empty\"}");
+        }
+
+        if(request.getYear() == null){
+            throw new MyTodoException("{\"yrErr\": \"year field cannot be empty\"}");
+        }
+
+        if(request.getMinutes() == null){
+            throw new MyTodoException("{\"minErr\": \"minutes field cannot be empty\"}");
+        }
+
+        if(request.getHour() == null){
+            throw new MyTodoException("{\"hrErr\": \"hour field cannot be empty\"}");
+        }
+
     }
 
 

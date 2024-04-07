@@ -15,12 +15,7 @@ public class EndUser {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @ManyToMany
-    @JoinTable(
-            name = "end_user_task",
-            joinColumns = @JoinColumn(name = "end_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
+    @OneToMany
     private List<Task> tasks;
 
     @Override

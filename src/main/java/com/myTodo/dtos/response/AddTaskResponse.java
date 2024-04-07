@@ -9,5 +9,5 @@ import lombok.ToString;
 @Getter
 @ToString
 public class AddTaskResponse {
-    private Task task;
+    private Long id;
 }
